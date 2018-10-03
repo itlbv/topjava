@@ -8,6 +8,8 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -25,9 +27,50 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExceed>  getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with correctly exceeded field
+        mealList.sort(Comparator.comparingInt(o -> o.getDateTime().getDayOfYear()));
 
+        List<UserMeal> mealsOfDayList = new ArrayList<>();
+        List<UserMealWithExceed> resultList = new ArrayList<>();
 
-        return null;
+        int dayOfYear = mealList.get(0).getDateTime().getDayOfYear();
+        for (UserMeal userMeal : mealList) {
+            if (userMeal.getDateTime().getDayOfYear() == dayOfYear) {
+                mealsOfDayList.add(userMeal);
+            } else {
+                checkMealsOfPreviousDay(mealsOfDayList, caloriesPerDay, resultList, startTime, endTime);
+                dayOfYear = userMeal.getDateTime().getDayOfYear();
+                mealsOfDayList.add(userMeal);
+            }
+
+        }
+        checkMealsOfPreviousDay(mealsOfDayList, caloriesPerDay, resultList, startTime, endTime);
+
+        return resultList;
+    }
+
+    private static void checkMealsOfPreviousDay(List<UserMeal> mealsOfDayList, int caloriesPerDay, List<UserMealWithExceed> resultList, LocalTime startTime, LocalTime endTime) {
+        if (isMealsOfDayExceeded(mealsOfDayList, caloriesPerDay)) {
+            addMealsOfDayToResultList(mealsOfDayList, resultList, startTime, endTime);
+        }
+        mealsOfDayList.clear();
+    }
+
+    private static boolean isMealsOfDayExceeded(List<UserMeal>mealsOfDayList, int caloriesPerDay) {
+        int caloriesOfDay = 0;
+        for (UserMeal meal : mealsOfDayList) {
+            caloriesOfDay += meal.getCalories();
+        }
+        return caloriesOfDay > caloriesPerDay;
+    }
+
+    private static void addMealsOfDayToResultList(List<UserMeal> mealsOfDayList, List<UserMealWithExceed> resultList, LocalTime startTime, LocalTime endTime) {
+        for (UserMeal meal : mealsOfDayList) {
+            if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                resultList.add(new UserMealWithExceed(meal.getDateTime(),
+                        meal.getDescription(),
+                        meal.getCalories(),
+                        true));
+            }
+        }
     }
 }
