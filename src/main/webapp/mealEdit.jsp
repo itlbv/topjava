@@ -6,16 +6,25 @@
     <title>Редактировать</title>
 </head>
 <body>
-    <form method="POST" action='meals' name="frmAddUser">
-        Дата и время : <input type="datetime-local" name="dateTime" data-date-format
-                           value="${meal.dateTime}" /> <br />
-        Описание : <input type="text" name="description"
-                             value="<c:out value="${meal.description}" />" /> <br />
-        Калории : <input type="text" name="calories"
-                          value="<c:out value="${meal.calories}" />" /> <br />
-        <input type="submit" value="Сохранить" />
-
-        <input type="hidden" name="id" value="${id}" /> <br />
+    <form method="POST">
+        <table>
+            <tr>
+                <td>Дата и время:</td>
+                <td><input type="datetime-local" name="dateTime" value="${meal.dateTime}"/></td>
+            </tr>
+            <tr>
+                <td>Описание:</td>
+                <td><input type="text" name="description" value="${meal.description}"/></td>
+            </tr>
+            <tr>
+                <td>Калории:</td>
+                <td><input type="text" name="calories" value="${meal.calories}"/></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Сохранить" /></td>
+                <td><input type="hidden" name="id" value="${id}" /></td>
+            </tr>
+        </table>
     </form>
 </body>
 </html>

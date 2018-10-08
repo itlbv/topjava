@@ -11,8 +11,8 @@
 <h2>Meals</h2>
 
 <style>
-    tr.green td{color: darkgreen;}
-    tr.red td{color: coral;}
+    tr.green td{color: darkgreen}
+    tr.red td{color: red}
 </style>
 
 <p><a href="meals?action=insert">Добавить</a></p>
@@ -23,7 +23,7 @@
     <th>Калории</th>
     <c:forEach var="meal" items="${meals}">
         <c:set var="className" value="${meal.exceed ? 'red' : 'green'}"/>
-        <tr  class=${className}>
+        <tr class=${className}>
             <td>${dateTimeFormatter.format(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
