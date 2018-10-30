@@ -12,15 +12,22 @@ import java.time.LocalTime;
 
 @NamedQueries({
         @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
-        @NamedQuery(name = Meal.ALL, query = "SELECT m FROM Meal m WHERE m.user.id=:userId"),
-        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.dateTime BETWEEN ?1 AND ?2 AND m.user.id=?3"),
+        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime=:dateTime, " +
+                                                                    "m.description=:description, " +
+                                                                    "m.calories=:calories " +
+                                                                    "WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId"),
+        @NamedQuery(name = Meal.GET_ALL, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.user.id=:userId ORDER BY m.dateTime desc"),
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user WHERE m.dateTime BETWEEN ?1 AND ?2 AND m.user.id=?3 ORDER BY m.dateTime desc"),
 })
 @Entity
 @Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = "id", name = "meals_unique_id_idx")})
 public class Meal extends AbstractBaseEntity {
 
     public static final String DELETE = "Meal.delete";
-    public static final String ALL = "Meal.getAll";
+    public static final String UPDATE = "Meal.update";
+    public static final String GET = "Meal.get";
+    public static final String GET_ALL = "Meal.getAll";
     public static final String BETWEEN = "User.getBetween";
 
     @Column(name = "date_time")
